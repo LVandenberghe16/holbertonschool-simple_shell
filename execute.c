@@ -8,26 +8,33 @@
  */
 void execute_command(char **args, char **argv, char **env)
 {
-	char *cmd = resolve_path(args[0]);
+	pid_t pid;
+	int status;
+	char *cmd_path;
 
-	if (!cmd)
+	cmd_path = resolve_path(args[0]);
+	if (!cmd_path)
 	{
-		write(STDERR_FILENO, argv[0], strlen(argv[0]));
-		write(STDERR_FILENO, ": ", 2);
-		write(STDERR_FILENO, args[0], strlen(args[0]));
-		write(STDERR_FILENO, ": command not found\n", 20);
+		fprintf(stderr, "%s: 1: %s: not found\n", argv[0], args[0]);
 		return;
 	}
 
-	if (fork() == 0)
+	pid = fork();
+	if (pid == 0)
 	{
-		if (execve(cmd, args, env) == -1)
-		{
-			perror(argv[0]);
-			exit(EXIT_FAILURE);
-		}
+		execve(cmd_path, args, env);
+		perror(argv[0]);
+		exit(EXIT_FAILURE);
+	}
+	else if (pid > 0)
+	{
+		waitpid(pid, &status, 0);
+	}
+	else
+	{
+		perror(argv[0]);
 	}
 
-	wait(NULL);
-	free(cmd);
+	if (cmd_path != args[0])
+		free(cmd_path);
 }
