@@ -8,21 +8,21 @@
  */
 char **parse_line(char *line)
 {
-	char **args = NULL;
+	char **args = malloc(sizeof(char *) * 64);
 	char *token;
 	size_t i = 0;
 
-	args = malloc(sizeof(char *) * 64);
 	if (!args)
 		return (NULL);
 
 	token = strtok(line, " ");
 	while (token)
 	{
-		args[i++] = token;
+		args[i++] = strdup(token);
 		token = strtok(NULL, " ");
 	}
 	args[i] = NULL;
+
 	return (args);
 }
 

@@ -7,20 +7,20 @@
  */
 void interactive_shell(char **argv, char **env)
 {
-	char *line = NULL;
+	char *line = NULL, **args;
 	size_t len = 0;
 	ssize_t nread;
-	char **args;
 
 	while (1)
 	{
 		write(STDOUT_FILENO, "($) ", 4);
 		nread = getline(&line, &len, stdin);
-		if (nread == -1)
+		if (nread == -1) /* EOF or error */
 			break;
 
-		line[nread - 1] = '\0'; /* Remove newline character */
+		line[nread - 1] = '\0';
 		args = parse_line(line);
+
 		if (args && args[0])
 		{
 			if (_strcmp(args[0], "exit") == 0)
@@ -39,16 +39,16 @@ void interactive_shell(char **argv, char **env)
  */
 void non_interactive_shell(char **argv, char **env)
 {
-	char *line = NULL;
+	char *line = NULL, **args;
 	size_t len = 0;
 	ssize_t nread;
-	char **args;
 
 	nread = getline(&line, &len, stdin);
 	if (nread != -1)
 	{
-		line[nread - 1] = '\0'; /* Remove newline character */
+		line[nread - 1] = '\0';
 		args = parse_line(line);
+
 		if (args && args[0])
 			execute_command(args, argv, env);
 		free(args);
