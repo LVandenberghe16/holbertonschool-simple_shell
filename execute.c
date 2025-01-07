@@ -15,7 +15,7 @@ void execute_command(char **args, char **argv, char **env)
 	cmd_path = resolve_path(args[0]);
 	if (!cmd_path)
 	{
-		fprintf(stderr, "%s: 1: %s: not found\n", argv[0], args[0]);
+		fprintf(stderr, "%s: No such file or directory\n", argv[0]);
 		return;
 	}
 
