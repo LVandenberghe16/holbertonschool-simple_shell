@@ -15,7 +15,6 @@ int main(int argc, char **argv, char **env)
 {
 	(void)argc;
 
-	/* Set up signal handler for SIGINT (Ctrl+C) */
 	signal(SIGINT, handle_sigint);
 
 	if (isatty(STDIN_FILENO))

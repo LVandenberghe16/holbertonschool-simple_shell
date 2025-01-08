@@ -8,10 +8,10 @@ void exit_shell(char **args)
 {
 	int status = 0;
 
-	if (args[1]) /* Check for an optional exit status */
+	if (args[1])
 	{
 		status = atoi(args[1]);
-		if (status < 0) /* Invalid exit status */
+		if (status < 0)
 		{
 			write(STDERR_FILENO, "exit: Invalid status\n", 21);
 			status = 0;

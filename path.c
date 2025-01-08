@@ -11,14 +11,15 @@ char *resolve_path(char *cmd)
 	char *path, *dir, *full_path;
 	struct stat st;
 
+	printf("%s\n", cmd);
 	if (stat(cmd, &st) == 0 && (st.st_mode & S_IXUSR))
-		return (strdup(cmd)); /* Command is an absolute path */
+		return (strdup(cmd));
 
 	path = getenv("PATH");
 	if (!path)
 		return (NULL);
 
-	path = strdup(path); /* Duplicate PATH */
+	path = strdup(path);
 	dir = strtok(path, ":");
 
 	while (dir)
