@@ -15,17 +15,17 @@ void interactive_shell(char **argv, char **env)
 	{
 		write(STDOUT_FILENO, "($) ", 4);
 		nread = getline(&line, &len, stdin);
-		if (nread == -1)
+		if (nread == -1) /* EOF or error */
 		{
-			if (feof(stdin))
+			if (feof(stdin)) /* Handle EOF (Ctrl+D) */
 			{
 				write(STDOUT_FILENO, "\n", 1);
-				break;
+				break; /* Exit the shell */
 			}
-			perror("getline");
+			perror("getline"); /* Handle other errors */
 			break;
 		}
-		line[nread - 1] = '\0';
+		line[nread - 1] = '\0'; /* Remove the newline character */
 		args = parse_line(line);
 		if (args && args[0])
 		{
@@ -68,6 +68,7 @@ void non_interactive_shell(char **argv, char **env)
 
 		if (args && args[0])
 		{
+			/* Check for built-in commands */
 			if (_strcmp(args[0], "exit") == 0)
 			{
 				exit_shell(args);
