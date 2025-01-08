@@ -7,42 +7,25 @@
  */
 void interactive_shell(char **argv, char **env)
 {
-	char *line = NULL, **args;
+	char *line = NULL;
 	size_t len = 0;
 	ssize_t nread;
+	char **args;
 
 	while (1)
 	{
 		write(STDOUT_FILENO, "($) ", 4);
 		nread = getline(&line, &len, stdin);
-		if (nread == -1) /* EOF or error */
-		{
-			if (feof(stdin)) /* Handle EOF (Ctrl+D) */
-			{
-				write(STDOUT_FILENO, "\n", 1);
-				break; /* Exit the shell */
-			}
-			perror("getline"); /* Handle other errors */
+		if (nread == -1)
 			break;
-		}
-		line[nread - 1] = '\0'; /* Remove the newline character */
+
+		line[nread - 1] = '\0'; /* Remove newline character */
 		args = parse_line(line);
 		if (args && args[0])
 		{
 			if (_strcmp(args[0], "exit") == 0)
-			{
-				exit_shell(args);
-				free(args);
-				free(line);
-			}
-			else if (_strcmp(args[0], "env") == 0)
-			{
-				print_env(env);
-			}
-			else
-			{
-				execute_command(args, argv, env);
-			}
+				break;
+			execute_command(args, argv, env);
 		}
 		free(args);
 	}
@@ -56,34 +39,18 @@ void interactive_shell(char **argv, char **env)
  */
 void non_interactive_shell(char **argv, char **env)
 {
-	char *line = NULL, **args;
+	char *line = NULL;
 	size_t len = 0;
 	ssize_t nread;
+	char **args;
 
 	nread = getline(&line, &len, stdin);
 	if (nread != -1)
 	{
-		line[nread - 1] = '\0';
+		line[nread - 1] = '\0'; /* Remove newline character */
 		args = parse_line(line);
-
 		if (args && args[0])
-		{
-			/* Check for built-in commands */
-			if (_strcmp(args[0], "exit") == 0)
-			{
-				exit_shell(args);
-				free(args);
-				free(line);
-			}
-			else if (_strcmp(args[0], "env") == 0)
-			{
-				print_env(env);
-			}
-			else
-			{
-				execute_command(args, argv, env);
-			}
-		}
+			execute_command(args, argv, env);
 		free(args);
 	}
 	free(line);
