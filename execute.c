@@ -12,7 +12,7 @@ void execute_command(char **args, char **argv, char **env)
 	int status;
 	char *cmd_path;
 
-	cmd_path = resolve_path(args[0]);
+	cmd_path = resolve_path(args[0], env);
 	if (!cmd_path)
 	{
 		fprintf(stderr, "%s: No such file or directory\n", argv[0]);

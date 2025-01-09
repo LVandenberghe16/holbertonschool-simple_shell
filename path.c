@@ -3,18 +3,29 @@
 /**
  * resolve_path - Resolves the full path of a command
  * @cmd: Command to resolve
+ * @env: Environment variables
  *
  * Return: Full path of the command, or NULL if not found
  */
-char *resolve_path(char *cmd)
+char *resolve_path(char *cmd, char **env)
 {
-	char *path, *dir, *full_path;
+	char *path = NULL, *dir = NULL, *full_path = NULL;
 	struct stat st;
+	size_t i;
 
 	if (stat(cmd, &st) == 0 && (st.st_mode & S_IXUSR))
 		return (strdup(cmd)); /* Command is an absolute path */
 
-	path = getenv("PATH");
+	/* Search for PATH in the env array */
+	for (i = 0; env[i]; i++)
+	{
+		if (strncmp(env[i], "PATH=", 5) == 0)
+		{
+			path = env[i] + 5; /* Skip "PATH=" */
+			break;
+		}
+	}
+
 	if (!path)
 		return (NULL);
 
