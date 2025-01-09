@@ -56,6 +56,11 @@ This shell replicates the basic behavior of standard UNIX shells such as `sh` or
 
 ## **Usage**
 
+### Flowchart
+
+![Flowchart](shell.drawio.png)
+
+
 ### Interactive Mode
 Run the shell by typing:
 ```bash
