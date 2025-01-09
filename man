@@ -1,0 +1,97 @@
+# SIMPLE SHELL MANUAL
+
+## NAME
+**hsh** \- Simple Unix shell implementation.
+
+## SYNOPSIS
+```bash
+hsh
+```
+
+## DESCRIPTION
+**hsh** is a simple implementation of a Unix command-line interpreter. This program provides basic shell functionality, including the execution of commands, support for PATH resolution, and built-in commands such as `exit` and `env`.
+
+## USAGE
+### Interactive Mode
+Launch the shell and enter commands manually. The shell displays a prompt, and you can type commands to execute.
+```bash
+$ ./hsh
+($) ls
+file1  file2
+($) exit
+```
+
+### Non-Interactive Mode
+Pass commands to the shell via a pipe or a file. The shell executes the commands and exits.
+```bash
+echo "ls" | ./hsh
+cat commands.txt | ./hsh
+```
+
+## BUILT-IN COMMANDS
+### `exit`
+Exits the shell.
+- Usage: `exit [status]`
+- If `status` is provided, it will be the exit status of the shell.
+
+### `env`
+Prints the current environment variables.
+- Usage: `env`
+
+## IMPLEMENTATION DETAILS
+### Files
+1. `main.c`:
+   - Entry point of the shell.
+   - Determines interactive or non-interactive mode.
+
+2. `shell.c`:
+   - Handles both interactive and non-interactive shell behaviors.
+
+3. `builtins.c`:
+   - Implements built-in commands such as `exit` and `env`.
+
+4. `execute.c`:
+   - Executes commands using `execve`.
+
+5. `path.c`:
+   - Resolves the full path of commands using the `PATH` environment variable.
+
+6. `utils.c`:
+   - Helper functions for string handling, memory management, etc.
+
+### Compilation
+```bash
+gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
+```
+
+### Example
+```bash
+$ ./hsh
+($) /bin/ls
+file1  file2
+($) env
+USER=ludwig
+PATH=/usr/local/bin:/usr/bin:/bin
+($) exit 0
+```
+
+### Error Handling
+- Outputs errors in the format:
+```bash
+./hsh: <line_number>: <command>: <error_message>
+```
+- Example:
+```bash
+($) nonexistent_command
+./hsh: 1: nonexistent_command: not found
+```
+
+### Memory Management
+- The shell ensures no memory leaks through proper allocation and deallocation.
+- Verified using tools like `valgrind`.
+
+## AUTHORS
+Ludwig Vandenberghe
+
+## COPYRIGHT
+This program is free software: you can redistribute it and/or modify it under the terms of the MIT License. See the LICENSE file for details.
