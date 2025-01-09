@@ -5,8 +5,10 @@
  * @args: Command arguments
  * @argv: Argument vector
  * @env: Environment variables
+ *
+ * Return: Exit status of the executed command
  */
-void execute_command(char **args, char **argv, char **env)
+int execute_command(char **args, char **argv, char **env)
 {
 	pid_t pid;
 	int status;
@@ -16,7 +18,7 @@ void execute_command(char **args, char **argv, char **env)
 	if (!cmd_path)
 	{
 		fprintf(stderr, "%s: No such file or directory\n", argv[0]);
-		return;
+		return (127); /* Return 127 for command not found */
 	}
 
 	pid = fork();
@@ -33,8 +35,14 @@ void execute_command(char **args, char **argv, char **env)
 	else
 	{
 		perror(argv[0]);
+		return (1); /* Return 1 for fork failure */
 	}
 
 	if (cmd_path != args[0])
 		free(cmd_path);
+
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+
+	return (1); /* Default return for abnormal termination */
 }
